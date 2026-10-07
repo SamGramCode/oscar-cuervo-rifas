@@ -9,8 +9,8 @@
 <link rel="apple-touch-icon" href="logo_oscar_cuervo_rifas_amarillo-removebg-preview.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="OscarCuervoRifas">
-<link rel="preconnect" href="https://oruudwanbjirxwjcrddz.supabase.co">
-<link rel="preload" as="video" type="video/mp4" href="https://oruudwanbjirxwjcrddz.supabase.co/storage/v1/object/public/rifa-media/hero_1784311930697_comp.mp4">
+<link rel="preconnect" href="https://pecdwxhtaplzjafufiks.supabase.co">
+<link rel="preload" as="video" type="video/mp4" href="https://pecdwxhtaplzjafufiks.supabase.co/storage/v1/object/public/rifa-media/hero_1784311930697_comp.mp4">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&family=Permanent+Marker&family=Bangers&family=Russo+One&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -278,10 +278,212 @@ body.light .drawer-item{background:#F4F4F4}
 </head>
 <body class="dark">
 
+<!-- ══ ALERT 200 ══ -->
+<div class="alert-200" id="alert200">
+  <div class="alert-200-box">
+    <div class="alert-200-icon">🔒</div>
+    <div class="alert-200-title">Límite de Seguridad</div>
+    <div class="alert-200-txt">Por seguridad, el máximo de tickets <strong>por compra</strong> es <strong>200</strong>. Si necesitas más, realiza una nueva compra.</div>
+    <button class="alert-200-btn" onclick="cerrarAlert200()">Entendido</button>
+  </div>
+</div>
+
+<!-- admin panel movido a admin.html -->
+<div class="admin-wrap" id="adminWrap" style="display:none">
+  <div id="adminLoginView" class="admin-login">
+    <div class="admin-login-box">
+      <div class="admin-login-title">ADMIN</div>
+      <div class="admin-login-sub">Panel de propietario — oscarcuervo</div>
+      <input class="admin-input" type="password" id="adminPassInput" placeholder="Contraseña" onkeydown="if(event.key==='Enter')adminLogin()">
+      <button class="admin-save" style="width:100%;margin-top:.8rem" onclick="adminLogin()">Ingresar</button>
+      <div class="admin-login-err" id="adminErr">Contraseña incorrecta</div>
+      <div style="margin-top:1.2rem"><a href="#" onclick="cerrarAdmin();return false" style="font-size:.78rem;color:var(--txt2)">← Volver al sitio</a></div>
+    </div>
+  </div>
+
+  <div id="adminDashView" style="display:none">
+    <div class="admin-nav">
+      <div class="admin-brand">⚙️ ADMIN</div>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <button class="admin-exit" style="background:rgba(231,76,60,.12);border-color:var(--red);color:var(--red);font-weight:800" onclick="iniciarNuevaRifa()">🔄 Nueva Rifa</button>
+        <button class="admin-exit" onclick="cerrarAdmin()">← Salir</button>
+      </div>
+    </div>
+    <div class="admin-body">
+      <div class="admin-tabs">
+        <div class="admin-tab active" onclick="setAdminTab('config',this)">⚙️ Config</div>
+        <div class="admin-tab" onclick="setAdminTab('boletos',this)">🎫 Boletos</div>
+        <div class="admin-tab" onclick="setAdminTab('stats',this)">📊 Stats</div>
+        <div class="admin-tab" onclick="setAdminTab('sorteos',this)">🎯 Sorteos</div>
+      </div>
+
+      <!-- CONFIG TAB -->
+      <div class="admin-section active" id="tab-config">
+        <div class="admin-card">
+          <div class="admin-card-title">🖼️ Hero — Imagen o Video</div>
+          <div class="media-tipo-btns">
+            <button class="media-tipo-btn active" id="btnTipoImg" onclick="setHeroTipo('imagen',this)">📷 Imagen</button>
+            <button class="media-tipo-btn" id="btnTipoVid" onclick="setHeroTipo('video',this)">🎬 Video</button>
+          </div>
+          <div class="admin-row">
+            <label class="admin-lbl">Subir archivo</label>
+            <label class="upload-btn" style="display:inline-block">
+              📁 Seleccionar archivo
+              <input type="file" id="heroFileInput" style="display:none" accept="image/*,video/*" onchange="previewHeroMedia(this)">
+            </label>
+            <div class="media-preview-wrap" id="heroPreviewWrap">
+              <img id="heroPreviewImg" src="" alt="" style="display:none">
+              <video id="heroPreviewVid" src="" muted autoplay loop style="display:none"></video>
+            </div>
+          </div>
+          <div class="admin-row">
+            <label class="admin-lbl">Título principal</label>
+            <input class="admin-input" id="cfgTitulo" placeholder="CUMPLIENDO SUEÑOS">
+          </div>
+          <div class="admin-row">
+            <label class="admin-lbl">Subtítulo</label>
+            <input class="admin-input" id="cfgSubtitulo" placeholder="PARTICIPA Y GANA CON OSCAR CUERVO">
+          </div>
+          <button class="admin-save" onclick="guardarHero()">💾 Guardar Hero</button>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-title">🎫 Rifa</div>
+          <div class="admin-row">
+            <label class="admin-lbl">Nombre del premio / rifa</label>
+            <input class="admin-input" id="cfgRifaNombre" placeholder="Gran Rifa de Moto">
+          </div>
+          <div class="admin-row">
+            <label class="admin-lbl">Precio por ticket</label>
+            <input class="admin-input" type="number" id="cfgPrecio" placeholder="5000">
+          </div>
+          <div class="admin-row">
+            <label class="admin-lbl">Total de tickets (máx 200)</label>
+            <input class="admin-input" type="number" id="cfgTotal" max="200" placeholder="200">
+          </div>
+          <button class="admin-save" onclick="guardarConfigRifa()">💾 Guardar Rifa</button>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-title">💳 Métodos de pago</div>
+          <div class="admin-row"><label class="admin-lbl">Nequi — número</label><input class="admin-input" id="cfgNequi" placeholder="310 000 0000"></div>
+          <div class="admin-row"><label class="admin-lbl">Daviplata — número</label><input class="admin-input" id="cfgDaviplata" placeholder="310 000 0000"></div>
+          <div class="admin-row"><label class="admin-lbl">Bre-B — número o usuario</label><input class="admin-input" id="cfgBreb" placeholder="@usuario o número"></div>
+          <div class="admin-row"><label class="admin-lbl">Binance — ID o email</label><input class="admin-input" id="cfgBinance" placeholder="ID Binance Pay o email"></div>
+          <button class="admin-save" onclick="guardarMetodosPago()">💾 Guardar Métodos</button>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-title">🔐 Cambiar contraseña</div>
+          <div class="admin-row"><label class="admin-lbl">Nueva contraseña</label><input class="admin-input" type="password" id="cfgPass1" placeholder="Nueva contraseña"></div>
+          <div class="admin-row"><label class="admin-lbl">Confirmar</label><input class="admin-input" type="password" id="cfgPass2" placeholder="Repetir contraseña"></div>
+          <button class="admin-save" onclick="cambiarPassword()">💾 Cambiar</button>
+          <div id="passMsg" style="font-size:.8rem;margin-top:.5rem"></div>
+        </div>
+      </div>
+
+      <!-- BOLETOS TAB -->
+      <div class="admin-section" id="tab-boletos">
+        <div class="boletos-filters">
+          <button class="filter-btn active" onclick="filtrarBoletos('todos',this)">Todos</button>
+          <button class="filter-btn" onclick="filtrarBoletos('pendiente',this)">⏳ Pendientes</button>
+          <button class="filter-btn" onclick="filtrarBoletos('aprobado',this)">✅ Aprobados</button>
+          <button class="filter-btn" onclick="filtrarBoletos('rechazado',this)">❌ Rechazados</button>
+        </div>
+        <div id="boletosLista"></div>
+      </div>
+
+      <!-- STATS TAB -->
+      <!-- SORTEOS TAB -->
+      <div class="admin-section" id="tab-sorteos">
+        <div class="admin-card">
+          <div class="admin-card-title">🎯 Sorteo Previo</div>
+          <div class="admin-row">
+            <label class="admin-lbl">¿Cuántos números premiar?</label>
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+              <button class="sorteo-qty-btn" onclick="setSorteoQty(1,this)">1</button>
+              <button class="sorteo-qty-btn" onclick="setSorteoQty(2,this)">2</button>
+              <button class="sorteo-qty-btn" onclick="setSorteoQty(3,this)">3</button>
+              <button class="sorteo-qty-btn" onclick="setSorteoQty(4,this)">4</button>
+              <button class="sorteo-qty-btn" onclick="setSorteoQty(5,this)">5</button>
+            </div>
+          </div>
+          <div class="admin-row">
+            <button class="admin-save" onclick="realizarSorteo()" id="btnSortear" disabled>🎰 Realizar Sorteo</button>
+          </div>
+          <div id="sorteoResultado" style="display:none;margin-top:1rem">
+            <div style="font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--txt2);margin-bottom:.6rem">Números sorteados</div>
+            <div id="sorteoNums" style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem"></div>
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+              <button class="admin-save" onclick="publicarPremios()">📢 Publicar en página</button>
+              <button class="admin-save" style="background:var(--red);box-shadow:none" onclick="limpiarPremios()">🗑️ Quitar premios</button>
+            </div>
+          </div>
+          <div id="premiosActuales" style="margin-top:1rem"></div>
+        </div>
+      </div>
+
+      <div class="admin-section" id="tab-stats">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-num" id="stVendidos">0</div><div class="stat-lbl">Tickets vendidos</div></div>
+          <div class="stat-card"><div class="stat-num" id="stDisponibles">0</div><div class="stat-lbl">Disponibles</div></div>
+          <div class="stat-card"><div class="stat-num" id="stPendientes">0</div><div class="stat-lbl">Pendientes</div></div>
+          <div class="stat-card"><div class="stat-num" id="stIngresos">$0</div><div class="stat-lbl">Ingresos aprobados</div></div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-title">📊 Ocupación</div>
+          <div style="display:flex;justify-content:space-between;font-size:.82rem;color:var(--txt2);margin-bottom:.5rem">
+            <span>Tickets vendidos/aprobados</span><span id="stPct">0%</span>
+          </div>
+          <div class="stat-bar"><div class="stat-bar-fill" id="stBar" style="width:0%"></div></div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-title">🔍 Verificar número</div>
+          <div style="display:flex;gap:.5rem">
+            <input class="admin-input" type="number" id="verifNum" placeholder="Número de ticket" style="flex:1;margin-bottom:0">
+            <button class="admin-save" style="flex-shrink:0" onclick="verificarNumero()">Buscar</button>
+          </div>
+          <div class="verif-result" id="verifResult"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NÚMERO DORADO -->
+<div id="doradoModal" style="display:none;position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:1.5rem">
+  <div style="background:var(--bg2);border:2px solid gold;border-radius:24px;padding:2rem;width:100%;max-width:380px;text-align:center">
+    <div style="font-size:3rem;margin-bottom:.5rem">🏆⭐🏆</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:gold;letter-spacing:2px;margin-bottom:.4rem">¡NÚMERO DORADO!</div>
+    <div style="font-size:.95rem;color:var(--txt2);margin-bottom:1.2rem">¡Felicidades! Uno de tus números es un <strong style="color:gold">número premiado</strong>. Oscar Cuervo se pondrá en contacto contigo pronto.</div>
+    <div id="doradoNums" style="display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:1.5rem"></div>
+    <button style="width:100%;background:linear-gradient(135deg,#f7c948,#e6a817);color:#000;padding:.9rem;border-radius:12px;font-weight:900;font-size:1rem;border:none;cursor:pointer" onclick="cerrarDoradoModal()">🎉 ¡Entendido!</button>
+  </div>
+</div>
+
+<!-- MODAL NUEVA RIFA -->
+<div id="nuevaRifaModal" style="display:none;position:fixed;inset:0;z-index:1100;background:rgba(0,0,0,.7);align-items:center;justify-content:center;padding:1.5rem">
+  <div style="background:var(--bg2);border:1px solid var(--brd);border-radius:20px;padding:2rem;max-width:360px;width:100%;text-align:center">
+    <div style="font-size:2rem;margin-bottom:.5rem">🔄</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:var(--red);margin-bottom:.5rem">NUEVA RIFA</div>
+    <p style="font-size:.83rem;color:var(--txt2);margin-bottom:1.2rem">Esto borrará <strong>todos los boletos</strong> y los premios intermedios. La configuración (precio, nombre, métodos de pago) y el hero se mantienen.<br><br>Escribe tu contraseña para confirmar:</p>
+    <input class="admin-input" type="password" id="nuevaRifaPass" placeholder="Contraseña" style="margin-bottom:.8rem" onkeydown="if(event.key==='Enter')confirmarNuevaRifa()">
+    <div id="nuevaRifaErr" style="color:var(--red);font-size:.78rem;margin-bottom:.6rem;display:none">Contraseña incorrecta</div>
+    <div style="display:flex;gap:.6rem">
+      <button class="admin-save" style="flex:1;background:var(--red);box-shadow:none" onclick="confirmarNuevaRifa()">✅ Confirmar</button>
+      <button class="admin-save" style="flex:1;background:var(--bg3);color:var(--txt);box-shadow:none" onclick="cerrarModalNuevaRifa()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ LANDING PAGE ══ -->
 <div id="landingPage">
   <nav id="mainNav" style="position:fixed;top:40px;left:10px;right:10px;transition:transform .35s ease;height:120px;background:rgba(255,255,255,.80);z-index:800;display:flex;align-items:center;justify-content:flex-end;padding:0 1.5rem;box-shadow:0 4px 24px rgba(0,0,0,.13);border-radius:24px;backdrop-filter:blur(8px)">
     <img src="logo_oscar_cuervo_rifas_amarillo-removebg-preview.png" alt="logo" style="position:absolute;left:0;top:-80px;height:300px;width:auto;z-index:2;bottom:auto;transform:rotate(-10deg);pointer-events:none">
+    <span class="nav-handle" style="position:absolute;left:25px;bottom:-20px;transform:rotate(-15deg);z-index:10;display:inline-block">
+      <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.75);font-family:'Permanent Marker',cursive;font-size:1.2rem;letter-spacing:1px;white-space:nowrap;color:transparent;background:none;padding:5px 0;clip-path:polygon(0% 12%,4% 0%,9% 8%,15% 1%,21% 9%,27% 0%,33% 7%,39% 1%,45% 8%,51% 0%,57% 6%,63% 1%,69% 9%,75% 0%,81% 7%,87% 1%,93% 8%,100% 2%,97% 18%,100% 32%,96% 45%,100% 58%,97% 72%,100% 85%,96% 100%,91% 92%,85% 100%,79% 93%,73% 100%,67% 91%,61% 100%,55% 92%,49% 100%,43% 93%,37% 100%,31% 91%,25% 100%,19% 92%,13% 100%,7% 91%,2% 100%,0% 88%,3% 72%,0% 58%,4% 44%,0% 30%,3% 16%)"></span>
+      <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Permanent Marker',cursive;font-size:1.2rem;letter-spacing:1px;white-space:nowrap;color:transparent;background:none;padding:11px 21px;clip-path:polygon(0% 12%,4% 0%,9% 8%,15% 1%,21% 9%,27% 0%,33% 7%,39% 1%,45% 8%,51% 0%,57% 6%,63% 1%,69% 9%,75% 0%,81% 7%,87% 1%,93% 8%,100% 2%,97% 18%,100% 32%,96% 45%,100% 58%,97% 72%,100% 85%,96% 100%,91% 92%,85% 100%,79% 93%,73% 100%,67% 91%,61% 100%,55% 92%,49% 100%,43% 93%,37% 100%,31% 91%,25% 100%,19% 92%,13% 100%,7% 91%,2% 100%,0% 88%,3% 72%,0% 58%,4% 44%,0% 30%,3% 16%)"></span>
+    </span>
     <span class="nav-domain" style="position:absolute;left:50%;transform:translateX(-50%);font-family:'Bebas Neue',sans-serif;font-size:clamp(0.6rem,3.5vw,1.8rem);color:#000;letter-spacing:clamp(0px,0.8vw,3px);white-space:nowrap;z-index:3;font-weight:900">OSCAR CUERVO RIFAS</span>
     <button id="themeBtn" onclick="toggleTheme()" style="background:none;border:none;cursor:pointer;padding:.5rem 4px;position:relative;z-index:3;font-size:1.4rem;display:flex;align-items:center">🌙</button>
     <button onclick="abrirDrawer()" style="background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:.5rem 0 .5rem 4px;position:relative;z-index:3">
@@ -329,7 +531,7 @@ body.light .drawer-item{background:#F4F4F4}
 
   <section class="hero" id="heroSection">
     <img class="hero-media" id="heroImg" src="" alt="Rifa" style="display:none">
-    <video class="hero-media" id="heroVid" muted autoplay loop playsinline src="https://oruudwanbjirxwjcrddz.supabase.co/storage/v1/object/public/rifa-media/hero_1784311930697_comp.mp4"></video>
+    <video class="hero-media" id="heroVid" muted autoplay loop playsinline src="https://pecdwxhtaplzjafufiks.supabase.co/storage/v1/object/public/rifa-media/hero_1784311930697_comp.mp4"></video>
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <div class="hero-tag">🏆 PARTICIPA Y GANA</div>
@@ -488,7 +690,912 @@ body.light .drawer-item{background:#F4F4F4}
   </div>
 </div>
 
-<script src="rifa.js"></script>
-<script>initTheme();cargarConfig();</script>
+<script>
+// ══════════════════════════════════════════════
+// SUPABASE — reemplazar con las credenciales reales
+// ══════════════════════════════════════════════
+const SUPABASE_URL = 'https://oruudwanbjirxwjcrddz.supabase.co';
+// Use environment variable if available, otherwise use default
+const SUPABASE_KEY = window.SUPABASE_KEY || 'sb_publishable_WtVtoFHBZBWCWogv3FGngQ_mUx6FcUw'; // FORCE_REBUILD_v3
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Carga prioritaria y mínima del video/imagen del hero — se dispara de inmediato,
+// en paralelo con el resto de la página, sin esperar la config completa (~20 valores)
+(async () => {
+  try {
+    const { data } = await sb.from('config').select('clave,valor').in('clave', ['hero_url','hero_tipo']);
+    const map = Object.fromEntries((data||[]).map(r => [r.clave, r.valor]));
+    if (map.hero_url) {
+      const img = document.getElementById('heroImg');
+      const vid = document.getElementById('heroVid');
+      if (map.hero_tipo === 'video') {
+        if (img) img.style.display = 'none';
+        if (vid) {
+          if (vid.src !== map.hero_url) vid.src = map.hero_url;
+          vid.style.display = 'block';
+        }
+      } else {
+        if (vid) vid.style.display = 'none';
+        if (img) { img.src = map.hero_url; img.style.display = 'block'; }
+      }
+    }
+  } catch(e) {}
+})();
+
+// ══════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════
+let cfg = {
+  precio_ticket: 5000,
+  hero_tipo: 'imagen',
+  hero_url: '',
+  hero_titulo: 'CUMPLIENDO SUEÑOS',
+  hero_subtitulo: 'PARTICIPA Y GANA CON OSCAR CUERVO',
+  nequi_numero: '',
+  daviplata_numero: '',
+  breb_numero: '',
+  binance_id: '',
+  pago_movil_banco: '',
+  pago_movil_telefono: '',
+  pago_movil_cedula: '',
+  total_tickets: 200,
+  rifa_nombre: 'Gran Rifa de Moto',
+  admin_password: 'OSCAR2026',
+  facebook_url: '',
+  instagram_url: '',
+  youtube_url: '',
+  moneda_simbolo: '$',
+  moneda_nombre: 'PESOS COLOMBIANOS'
+};
+
+async function cargarConfig() {
+  try {
+    const { data } = await sb.from('config').select('*');
+    if (data) data.forEach(r => { cfg[r.clave] = r.valor; });
+  } catch(e) {}
+  aplicarConfig();
+}
+
+function fmt(n) { return (cfg.moneda_simbolo || '$') + Number(n).toLocaleString('es-CO'); }
+
+function aplicarConfig() {
+  // Hero
+  const titulo = cfg.hero_titulo || 'CUMPLIENDO SUEÑOS';
+  const subtit = cfg.hero_subtitulo || 'PARTICIPA Y GANA CON OSCAR CUERVO';
+  const tituloEl = document.getElementById('heroTitle');
+  const subtitEl = document.getElementById('heroSubtitle');
+  if (tituloEl) tituloEl.innerHTML = titulo.replace(' ', '<br>');
+  if (subtitEl) subtitEl.textContent = subtit;
+
+  // Redes sociales en drawer
+  const fbEl = document.getElementById('drawerFb');
+  const igEl = document.getElementById('drawerIg');
+  const ytEl = document.getElementById('drawerYt');
+  if (fbEl && cfg.facebook_url) fbEl.href = cfg.facebook_url;
+  if (igEl && cfg.instagram_url) igEl.href = cfg.instagram_url;
+  if (ytEl && cfg.youtube_url) ytEl.href = cfg.youtube_url;
+
+  // Hero media
+  const img = document.getElementById('heroImg');
+  const vid = document.getElementById('heroVid');
+  if (cfg.hero_url) {
+    if (cfg.hero_tipo === 'video') {
+      img.style.display = 'none';
+      if (vid.src !== cfg.hero_url) vid.src = cfg.hero_url;
+      vid.style.display = 'block';
+    } else {
+      vid.style.display = 'none';
+      img.src = cfg.hero_url;
+      img.style.display = 'block';
+    }
+  }
+
+  // Precio y moneda
+  const precio = Number(cfg.precio_ticket) || 5000;
+  document.getElementById('stripPrecio').textContent = fmt(precio);
+  const monedaEl = document.getElementById('precioMonedaNombre');
+  if (monedaEl) monedaEl.textContent = (cfg.moneda_nombre || 'PESOS COLOMBIANOS').toUpperCase();
+  actualizarPrecio();
+  actualizarQuickBtns();
+  // Pago Móvil — mostrar solo si está configurado
+  const cardPM = document.getElementById('cardPagoMovil');
+  if (cardPM) cardPM.style.display = cfg.pago_movil_telefono ? '' : 'none';
+
+  // Premios intermedios
+  mostrarPremiosPublicos();
+  mostrarPremiosActuales();
+}
+
+// ══════════════════════════════════════════════
+// ESTADO COMPRA
+// ══════════════════════════════════════════════
+let pState = {
+  qty: 1,
+  nombre: '', whatsapp: '', cedula: '', email: '',
+  metodoPago: null,
+  referencia: '',
+  comprobanteFile: null,
+  comprobanteUrl: null,
+  enviando: false,
+  numerosAsignados: []
+};
+
+// ══════════════════════════════════════════════
+// THEME
+// ══════════════════════════════════════════════
+// ── DRAWER ──
+function abrirDrawer() {
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function cerrarDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── VERIFICAR BOLETO ──
+function abrirVerificar() {
+  document.getElementById('verifModal').classList.add('open');
+  document.getElementById('verifResultado').style.display = 'none';
+  document.getElementById('verifInput').value = '';
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('verifInput').focus(), 300);
+}
+function cerrarVerificar() {
+  document.getElementById('verifModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+async function buscarTickets() {
+  let q = document.getElementById('verifInput').value.trim();
+  if (!q) return;
+  if (q.startsWith('+57')) { q = q.substring(3); }
+  const res = document.getElementById('verifResultado');
+  const btn = document.getElementById('btnBuscar');
+  btn.textContent = '⏳ Buscando...';
+  btn.disabled = true;
+  res.style.display = 'none';
+
+  const { data } = await sb.from('boletos')
+    .select('nombre,numeros_asignados,cantidad,estado,created_at')
+    .or(`whatsapp.eq.${q},email.eq.${q}`)
+    .neq('estado', 'rechazado');
+
+  btn.textContent = 'Buscar mis tickets →';
+  btn.disabled = false;
+  res.style.display = 'block';
+
+  if (!data || data.length === 0) {
+    res.innerHTML = `<div style="text-align:center;padding:1.2rem;background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.25);border-radius:14px">
+      <div style="font-size:2rem;margin-bottom:.5rem">😕</div>
+      <div style="font-weight:800;color:var(--red);margin-bottom:.3rem">No encontramos resultados</div>
+      <div style="font-size:.82rem;color:var(--txt2)">Verifica que el WhatsApp o correo sea el mismo con el que compraste</div>
+    </div>`;
+    return;
+  }
+
+  const todosNums = data.flatMap(b => b.numeros_asignados || []).sort((a,b)=>a-b);
+  const nombre = data[0].nombre;
+  const aprobados = data.filter(b=>b.estado==='aprobado').flatMap(b=>b.numeros_asignados||[]);
+  const pendientes = data.filter(b=>b.estado==='pendiente').flatMap(b=>b.numeros_asignados||[]);
+
+  res.innerHTML = `
+    <div style="background:rgba(46,204,113,.08);border:1.5px solid rgba(46,204,113,.3);border-radius:14px;padding:1.2rem;margin-bottom:.8rem">
+      <div style="font-weight:800;color:var(--green);margin-bottom:.2rem">✅ ¡Encontramos tus tickets!</div>
+      <div style="font-size:.82rem;color:var(--txt2)">Titular: <strong style="color:var(--txt)">${nombre}</strong></div>
+    </div>
+    ${aprobados.length > 0 ? `
+    <div style="margin-bottom:.8rem">
+      <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--green);margin-bottom:.6rem">✅ Confirmados (${aprobados.length})</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.4rem">${aprobados.map(n=>`<div style="background:var(--green);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;padding:.3rem .8rem;border-radius:8px;box-shadow:0 3px 10px rgba(46,204,113,.3)">${numPad(n)}</div>`).join('')}</div>
+    </div>` : ''}
+    ${pendientes.length > 0 ? `
+    <div style="margin-bottom:.8rem">
+      <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#F39C12;margin-bottom:.6rem">⏳ Pendientes de confirmación (${pendientes.length})</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.4rem">${pendientes.map(n=>`<div style="background:rgba(243,156,18,.15);border:1.5px solid #F39C12;color:#F39C12;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;padding:.3rem .8rem;border-radius:8px">${numPad(n)}</div>`).join('')}</div>
+    </div>` : ''}
+    <div style="font-size:.78rem;color:var(--txt2);text-align:center;margin-top:.5rem">Total: <strong>${todosNums.length} ticket(s)</strong></div>
+  `;
+}
+
+// ── THEME ──
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  const btn = document.getElementById('themeBtn');
+  if (btn) btn.textContent = isLight ? '☀️' : '🌙';
+  localStorage.setItem('rifa_theme', isLight ? 'light' : 'dark');
+}
+function initTheme() {
+  const t = localStorage.getItem('rifa_theme') || 'dark';
+  if (t === 'light') { document.body.classList.add('light'); const btn = document.getElementById('themeBtn'); if(btn) btn.textContent = '☀️'; }
+}
+
+// ══════════════════════════════════════════════
+// COMPRA — MODAL
+// ══════════════════════════════════════════════
+function abrirComprar() {
+  document.getElementById('purchaseModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  irStep(1);
+  actualizarPrecio();
+}
+function cerrarComprar() {
+  document.getElementById('purchaseModal').classList.remove('open');
+  document.body.style.overflow = '';
+  resetPurchase();
+}
+
+function irStep(n) {
+  [1,2,3,4].forEach(i => { const el = document.getElementById('pStep'+i); if(el) el.style.display = 'none'; });
+  const step = document.getElementById('pStep'+n);
+  if (step) step.style.display = 'block';
+}
+
+function resetPurchase() {
+  pState = { qty:1, nombre:'', whatsapp:'', cedula:'', email:'', metodoPago:null, referencia:'', comprobanteFile:null, comprobanteUrl:null, enviando:false, numerosAsignados:[] };
+  document.getElementById('qtyVal').textContent = '1';
+  ['pNombre','pWhatsapp','pCedula','pEmail','pReferencia'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.querySelectorAll('.pay-card').forEach(c => c.classList.remove('sel'));
+  document.getElementById('payInfoBox').classList.remove('show');
+  const p = document.getElementById('compPreview'); if(p){ p.style.display='none'; p.src=''; }
+  const ok = document.getElementById('compOk'); if(ok) ok.style.display='none';
+  const inp = document.getElementById('compInput'); if(inp) inp.value='';
+  actualizarPrecio();
+}
+
+// ══════════════════════════════════════════════
+// CANTIDAD
+// ══════════════════════════════════════════════
+function cambiarQty(delta) {
+  const nv = pState.qty + delta;
+  if (nv > 200) { mostrarAlert200(); return; }
+  if (nv < 1) return;
+  pState.qty = nv;
+  document.getElementById('qtyVal').textContent = nv;
+  actualizarPrecio();
+}
+function setQty(n) {
+  if (n > 200) { mostrarAlert200(); return; }
+  pState.qty = n;
+  document.getElementById('qtyVal').textContent = n;
+  actualizarPrecio();
+  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('sel'));
+}
+function actualizarPrecio() {
+  const precio = Number(cfg.precio_ticket) || 5000;
+  const total = precio * pState.qty;
+  const unitEl = document.getElementById('precioUnitLabel');
+  const totEl = document.getElementById('precioTotal');
+  if (unitEl) unitEl.textContent = `1 ticket = ${fmt(precio)}`;
+  if (totEl) totEl.textContent = fmt(total);
+  const ptEl = document.getElementById('payInfoTotal');
+  if (ptEl) ptEl.textContent = fmt(total);
+}
+function actualizarQuickBtns() {
+  const precio = Number(cfg.precio_ticket) || 5000;
+  [5,10,20,50].forEach(n => {
+    const el = document.getElementById('qp'+n);
+    if (el) el.textContent = fmt(precio*n);
+  });
+}
+function mostrarAlert200() {
+  document.getElementById('alert200').classList.add('open');
+}
+function cerrarAlert200() {
+  document.getElementById('alert200').classList.remove('open');
+}
+
+// ══════════════════════════════════════════════
+// STEP 2 — VALIDACIÓN
+// ══════════════════════════════════════════════
+function validarStep2() {
+  const nombre = document.getElementById('pNombre').value.trim();
+  const wa = document.getElementById('pWhatsapp').value.trim();
+  const cedula = document.getElementById('pCedula').value.trim();
+  if (!nombre) { alert('Ingresa tu nombre y apellido'); return; }
+  if (!wa || wa.length < 10) { alert('Ingresa tu número de WhatsApp'); return; }
+  if (!cedula) { alert('Ingresa tu número de cédula'); return; }
+  pState.nombre = nombre;
+  pState.whatsapp = wa;
+  pState.cedula = cedula;
+  pState.email = document.getElementById('pEmail').value.trim();
+  irStep(3);
+}
+
+// ══════════════════════════════════════════════
+// STEP 3 — PAGO
+// ══════════════════════════════════════════════
+const PAY_LABELS = { nequi:'Nequi', daviplata:'Daviplata', breb:'Bre-B', binance:'Binance Pay', pago_movil:'Pago Móvil' };
+const PAY_CFG_KEYS = { nequi:'nequi_numero', daviplata:'daviplata_numero', breb:'breb_numero', binance:'binance_id' };
+
+function selectPago(metodo, card) {
+  pState.metodoPago = metodo;
+  document.querySelectorAll('.pay-card').forEach(c => c.classList.remove('sel'));
+  card.classList.add('sel');
+  const box = document.getElementById('payInfoBox');
+  const lbl = document.getElementById('payInfoLbl');
+  const num = document.getElementById('payInfoNum');
+  const extra = document.getElementById('payInfoExtra');
+  lbl.textContent = 'Pagar con ' + PAY_LABELS[metodo];
+  if (metodo === 'pago_movil') {
+    num.textContent = cfg.pago_movil_telefono || '(no configurado)';
+    extra.style.display = 'block';
+    extra.innerHTML = `🏦 <strong>Banco:</strong> ${cfg.pago_movil_banco||'-'}<br>🪪 <strong>Cédula:</strong> ${cfg.pago_movil_cedula||'-'}`;
+  } else {
+    const key = PAY_CFG_KEYS[metodo];
+    num.textContent = cfg[key] || '(no configurado)';
+    extra.style.display = 'none';
+  }
+  box.classList.add('show');
+  actualizarBtnFinalizar();
+}
+
+function previewComp(input) {
+  const file = input.files[0];
+  if (!file) return;
+  pState.comprobanteFile = file;
+  const prev = document.getElementById('compPreview');
+  const ok = document.getElementById('compOk');
+  prev.src = URL.createObjectURL(file);
+  prev.style.display = 'block';
+  ok.style.display = 'block';
+  actualizarBtnFinalizar();
+}
+
+function actualizarBtnFinalizar() {
+  const ref = document.getElementById('pReferencia').value.trim();
+  const ok = pState.metodoPago && pState.comprobanteFile;
+  document.getElementById('btnFinalizar').disabled = !ok;
+}
+
+document.getElementById('pReferencia')?.addEventListener('input', actualizarBtnFinalizar);
+
+// ══════════════════════════════════════════════
+// FINALIZAR COMPRA
+// ══════════════════════════════════════════════
+async function finalizarCompra() {
+  if (pState.enviando) return;
+  pState.enviando = true;
+  const btn = document.getElementById('btnFinalizar');
+  btn.textContent = '⏳ Procesando...';
+  btn.disabled = true;
+
+  try {
+    // Verificar disponibilidad
+    const disponibles = await getTicketsDisponibles();
+    if (pState.qty > disponibles) {
+      alert(`Solo quedan ${disponibles} tickets disponibles. Reduce la cantidad.`);
+      btn.textContent = '✅ FINALIZAR RESERVA';
+      btn.disabled = false;
+      pState.enviando = false;
+      return;
+    }
+
+    // Subir comprobante
+    let compUrl = null;
+    if (pState.comprobanteFile) {
+      const file = pState.comprobanteFile;
+      const ext = file.type.includes('png') ? 'png' : file.type.includes('webp') ? 'webp' : 'jpg';
+      const fileName = `comp_${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: upErr } = await sb.storage.from('rifa-comprobantes').upload(fileName, file, { upsert: true, contentType: file.type });
+      if (!upErr) {
+        const { data: urlData } = sb.storage.from('rifa-comprobantes').getPublicUrl(fileName);
+        compUrl = urlData.publicUrl;
+      }
+    }
+
+    // Asignar números
+    const numeros = await asignarNumeros(pState.qty);
+
+    // Guardar en Supabase
+    const { error } = await sb.from('boletos').insert({
+      nombre: pState.nombre,
+      whatsapp: pState.whatsapp,
+      cedula: pState.cedula,
+      email: pState.email || null,
+      cantidad: pState.qty,
+      numeros_asignados: numeros,
+      metodo_pago: pState.metodoPago,
+      referencia: document.getElementById('pReferencia').value.trim(),
+      comprobante_url: compUrl,
+      total: Number(cfg.precio_ticket) * pState.qty,
+      estado: 'pendiente'
+    });
+
+    if (error) throw error;
+
+    pState.numerosAsignados = numeros;
+    mostrarConfirmacion(numeros);
+    actualizarContadores();
+
+  } catch(e) {
+    alert('Hubo un problema. Por favor escribe a Oscar Cuervo por WhatsApp: +573214789428');
+    btn.textContent = '✅ FINALIZAR RESERVA';
+    btn.disabled = false;
+  }
+
+  pState.enviando = false;
+}
+
+async function getTicketsDisponibles() {
+  const { data } = await sb.from('boletos').select('cantidad').in('estado', ['pendiente','aprobado']);
+  const vendidos = data ? data.reduce((s,r) => s + (r.cantidad||0), 0) : 0;
+  return (Number(cfg.total_tickets) || 200) - vendidos;
+}
+
+async function asignarNumeros(qty) {
+  const { data } = await sb.from('numeros_vendidos').select('numero').eq('rifa_nombre', cfg.rifa_nombre || null);
+  const usados = new Set();
+  if (data) data.forEach(r => usados.add(r.numero));
+  const total = Number(cfg.total_tickets) || 9999;
+  const disponibles = [];
+  for (let i = 1; i <= total; i++) {
+    if (!usados.has(i)) disponibles.push(i);
+  }
+  for (let i = disponibles.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [disponibles[i], disponibles[j]] = [disponibles[j], disponibles[i]];
+  }
+  return disponibles.slice(0, qty).sort((a, b) => a - b);
+}
+
+function numPad(n) { return String(n).padStart(3,'0'); }
+
+function mostrarConfirmacion(numeros) {
+  const grid = document.getElementById('numerosAsignados');
+  grid.innerHTML = numeros.map(n => `<div class="numero-chip">${numPad(n)}</div>`).join('');
+  const msg = encodeURIComponent(`Hola Oscar Cuervo! Hice una reserva de ${pState.qty} ticket(s) para la rifa. Mi nombre: ${pState.nombre} | Cédula: ${pState.cedula} | Mis números: ${numeros.map(numPad).join(', ')}`);
+  document.getElementById('confirmWaLink').href = `https://wa.me/573214789428?text=${msg}`;
+  irStep(4);
+
+  // Verificar números dorados
+  try {
+    const dorados = JSON.parse(cfg.premios_dorados || '[]');
+    const ganados = numeros.filter(n => dorados.includes(n));
+    if (ganados.length > 0) {
+      setTimeout(() => mostrarDorado(ganados), 800);
+    }
+  } catch(e) {}
+}
+
+function mostrarDorado(nums) {
+  document.getElementById('doradoNums').innerHTML = nums.map(n =>
+    `<div style="background:gold;color:#000;font-family:'Bebas Neue',sans-serif;font-size:1.8rem;padding:.4rem 1rem;border-radius:10px">${numPad(n)}</div>`
+  ).join('');
+  document.getElementById('doradoModal').style.display = 'flex';
+  // Notificar a Oscar Cuervo por WhatsApp
+  const rifaNombre = cfg.rifa_nombre || 'la rifa';
+  const msgG = encodeURIComponent(`🏆 ¡NÚMERO DORADO! 🏆\n\n${pState.nombre} (${pState.whatsapp}) acaba de comprar y le tocó el número dorado: ${nums.map(numPad).join(', ')}\n\nRifa: ${rifaNombre}`);
+  window.open(`https://wa.me/573214789428?text=${msgG}`, '_blank');
+}
+
+function cerrarDoradoModal() {
+  document.getElementById('doradoModal').style.display = 'none';
+}
+
+// ══════════════════════════════════════════════
+// CONTADORES
+// ══════════════════════════════════════════════
+async function actualizarContadores() {
+  try {
+    const { data } = await sb.from('boletos').select('cantidad,estado');
+    const total = Number(cfg.total_tickets) || 200;
+    const aprobados = (data||[]).filter(r=>r.estado==='aprobado').reduce((s,r)=>s+(r.cantidad||0),0);
+    const pendientes = (data||[]).filter(r=>r.estado==='pendiente').reduce((s,r)=>s+(r.cantidad||0),0);
+    const vendidos = aprobados + pendientes;
+    const disp = Math.max(0, total - vendidos);
+    const el1 = document.getElementById('stripVendidos'); if(el1) el1.textContent = vendidos;
+    const el2 = document.getElementById('stripDisp'); if(el2) el2.textContent = disp;
+    const elAvail = document.getElementById('availTxt');
+    if (elAvail) elAvail.textContent = disp > 0 ? 'TICKETS DISPONIBLES AHORA' : '🔴 TICKETS AGOTADOS';
+  } catch(e) {}
+}
+
+// ══════════════════════════════════════════════
+// ADMIN
+// ══════════════════════════════════════════════
+let adminLogueado = false;
+function abrirAdmin() {
+  document.getElementById('adminWrap').classList.add('open');
+  if (!adminLogueado) {
+    document.getElementById('adminLoginView').style.display = 'flex';
+    document.getElementById('adminDashView').style.display = 'none';
+  }
+}
+function cerrarAdmin() {
+  document.getElementById('adminWrap').classList.remove('open');
+}
+function adminLogin() {
+  const pass = document.getElementById('adminPassInput').value;
+  if (pass === cfg.admin_password) {
+    adminLogueado = true;
+    document.getElementById('adminLoginView').style.display = 'none';
+    document.getElementById('adminDashView').style.display = 'block';
+    cargarAdminConfig();
+    cargarBoletos('todos');
+    cargarStats();
+  } else {
+    document.getElementById('adminErr').style.display = 'block';
+    setTimeout(() => document.getElementById('adminErr').style.display = 'none', 2000);
+  }
+}
+
+function setAdminTab(tab, el) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  if (tab === 'boletos') cargarBoletos(window._filtroActual || 'todos');
+  if (tab === 'stats') cargarStats();
+}
+
+function cargarAdminConfig() {
+  document.getElementById('cfgTitulo').value = cfg.hero_titulo || '';
+  document.getElementById('cfgSubtitulo').value = cfg.hero_subtitulo || '';
+  document.getElementById('cfgRifaNombre').value = cfg.rifa_nombre || '';
+  document.getElementById('cfgPrecio').value = cfg.precio_ticket || '';
+  document.getElementById('cfgTotal').value = cfg.total_tickets || 200;
+  document.getElementById('cfgNequi').value = cfg.nequi_numero || '';
+  document.getElementById('cfgDaviplata').value = cfg.daviplata_numero || '';
+  document.getElementById('cfgBreb').value = cfg.breb_numero || '';
+  document.getElementById('cfgBinance').value = cfg.binance_id || '';
+  const tipo = cfg.hero_tipo || 'imagen';
+  document.getElementById('btnTipoImg').classList.toggle('active', tipo === 'imagen');
+  document.getElementById('btnTipoVid').classList.toggle('active', tipo === 'video');
+}
+
+let heroTipoActual = 'imagen';
+function setHeroTipo(tipo, btn) {
+  heroTipoActual = tipo;
+  document.querySelectorAll('.media-tipo-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('heroFileInput').accept = tipo === 'video' ? 'video/*' : 'image/*';
+}
+
+function previewHeroMedia(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const wrap = document.getElementById('heroPreviewWrap');
+  const imgEl = document.getElementById('heroPreviewImg');
+  const vidEl = document.getElementById('heroPreviewVid');
+  wrap.style.display = 'block';
+  if (heroTipoActual === 'video') {
+    imgEl.style.display = 'none';
+    vidEl.src = url;
+    vidEl.style.display = 'block';
+  } else {
+    vidEl.style.display = 'none';
+    imgEl.src = url;
+    imgEl.style.display = 'block';
+  }
+}
+
+async function guardarHero() {
+  const input = document.getElementById('heroFileInput');
+  const titulo = document.getElementById('cfgTitulo').value.trim();
+  const subtitulo = document.getElementById('cfgSubtitulo').value.trim();
+  let heroUrl = cfg.hero_url;
+
+  if (input.files[0]) {
+    const file = input.files[0];
+    const ext = file.name.split('.').pop();
+    const fileName = `hero_${Date.now()}.${ext}`;
+    const { error } = await sb.storage.from('rifa-media').upload(fileName, file, { upsert: true, contentType: file.type });
+    if (!error) {
+      const { data } = sb.storage.from('rifa-media').getPublicUrl(fileName);
+      heroUrl = data.publicUrl;
+    }
+  }
+
+  await guardarCfg({ hero_tipo: heroTipoActual, hero_url: heroUrl, hero_titulo: titulo, hero_subtitulo: subtitulo });
+  cfg.hero_tipo = heroTipoActual; cfg.hero_url = heroUrl; cfg.hero_titulo = titulo; cfg.hero_subtitulo = subtitulo;
+  aplicarConfig();
+  alert('✅ Hero guardado');
+}
+
+// ══ NUEVA RIFA ═══════════════════════════════════════
+function iniciarNuevaRifa() {
+  document.getElementById('nuevaRifaPass').value = '';
+  document.getElementById('nuevaRifaErr').style.display = 'none';
+  const m = document.getElementById('nuevaRifaModal');
+  m.style.display = 'flex';
+}
+function cerrarModalNuevaRifa() {
+  document.getElementById('nuevaRifaModal').style.display = 'none';
+}
+async function confirmarNuevaRifa() {
+  const pass = document.getElementById('nuevaRifaPass').value;
+  if (pass !== (cfg.admin_password || 'OSCAR2026')) {
+    document.getElementById('nuevaRifaErr').style.display = 'block';
+    return;
+  }
+  cerrarModalNuevaRifa();
+  try {
+    // Borrar todos los boletos
+    await sb.from('boletos').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    // Borrar premios intermedios
+    await sb.from('config').upsert({clave:'premios_intermedios',valor:''},{onConflict:'clave'});
+    cfg.premios_intermedios = '';
+    mostrarPremiosPublicos();
+    mostrarPremiosActuales();
+    _sorteoNums = [];
+    document.getElementById('sorteoResultado').style.display = 'none';
+    await actualizarContadores();
+    alert('✅ Nueva rifa iniciada. Los boletos han sido eliminados.');
+  } catch(e) {
+    alert('Error al reiniciar: ' + e.message);
+  }
+}
+
+// ══ SORTEOS INTERMEDIOS ══════════════════════════════
+let _sorteoQty = 0;
+let _sorteoNums = [];
+
+function setSorteoQty(n, el) {
+  _sorteoQty = n;
+  document.querySelectorAll('.sorteo-qty-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('btnSortear').disabled = false;
+}
+
+async function realizarSorteo() {
+  if (!_sorteoQty) return;
+  const { data } = await sb.from('boletos').select('numeros_asignados,nombre').eq('estado','aprobado');
+  if (!data || !data.length) { alert('No hay boletos aprobados aún.'); return; }
+  const pool = data.flatMap(b => (b.numeros_asignados||[]).map(n=>({num:n,nombre:b.nombre})));
+  if (pool.length < _sorteoQty) { alert(`Solo hay ${pool.length} número(s) aprobado(s).`); return; }
+  const shuffled = [...pool];
+  for (let i = shuffled.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
+  }
+  _sorteoNums = shuffled.slice(0, _sorteoQty);
+  const container = document.getElementById('sorteoNums');
+  container.innerHTML = _sorteoNums.map(x=>
+    `<div style="background:linear-gradient(135deg,var(--or),#ff8c42);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1.5rem;padding:.35rem .9rem;border-radius:10px;text-align:center">
+      <div>${numPad(x.num)}</div>
+      <div style="font-size:.6rem;font-weight:400;letter-spacing:1px;opacity:.9">${x.nombre||''}</div>
+    </div>`
+  ).join('');
+  document.getElementById('sorteoResultado').style.display = 'block';
+}
+
+async function publicarPremios() {
+  if (!_sorteoNums.length) return;
+  const valor = JSON.stringify(_sorteoNums.map(x=>({num:x.num,nombre:x.nombre||''})));
+  await sb.from('config').upsert({clave:'premios_intermedios',valor},{onConflict:'clave'});
+  cfg.premios_intermedios = valor;
+  mostrarPremiosPublicos();
+  mostrarPremiosActuales();
+  alert('✅ Premios publicados en la página pública.');
+}
+
+async function limpiarPremios() {
+  if (!confirm('¿Quitar los premios de la página pública?')) return;
+  await sb.from('config').upsert({clave:'premios_intermedios',valor:''},{onConflict:'clave'});
+  cfg.premios_intermedios = '';
+  _sorteoNums = [];
+  document.getElementById('sorteoResultado').style.display = 'none';
+  mostrarPremiosPublicos();
+  mostrarPremiosActuales();
+}
+
+function mostrarPremiosActuales() {
+  const el = document.getElementById('premiosActuales');
+  if (!el) return;
+  let lista = [];
+  try { lista = JSON.parse(cfg.premios_intermedios||'[]'); } catch(e){}
+  if (!lista.length) { el.innerHTML = ''; return; }
+  el.innerHTML = `<div style="font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--or);margin-bottom:.5rem">Publicados actualmente</div>`
+    + lista.map(x=>`<div style="font-size:.85rem;padding:.2rem 0">🏆 ${numPad(x.num)} — ${x.nombre||''}</div>`).join('');
+}
+
+async function mostrarPremiosPublicos() {
+  const sec = document.getElementById('premiosSection');
+  const grid = document.getElementById('premiosGrid');
+  if (!sec || !grid) return;
+  if (cfg.dorados_publicados !== 'true') { sec.classList.remove('visible'); return; }
+  let dorados = [];
+  try { dorados = JSON.parse(cfg.premios_dorados||'[]'); } catch(e){}
+  if (!dorados.length) { sec.classList.remove('visible'); return; }
+  sec.classList.add('visible');
+  // Consultar cuáles ya fueron asignados
+  const { data } = await sb.from('boletos').select('numeros_asignados').not('estado','in','("rechazado","archivado")');
+  const asignados = new Set();
+  (data||[]).forEach(b => (b.numeros_asignados||[]).forEach(n => asignados.add(n)));
+  grid.innerHTML = dorados.map(n => {
+    const ganado = asignados.has(n);
+    const bg = ganado ? '#E74C3C' : '#2ECC71';
+    const label = ganado ? 'GANADO' : 'DISPONIBLE';
+    return `<div style="background:${bg};color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1.6rem;padding:.5rem 1rem;border-radius:10px;text-align:center;box-shadow:0 3px 12px ${bg}55;min-width:70px">
+      <div>${numPad(n)}</div>
+      <div style="font-size:.5rem;letter-spacing:1.5px;opacity:.9">${label}</div>
+    </div>`;
+  }).join('');
+}
+
+async function guardarConfigRifa() {
+  const nombre = document.getElementById('cfgRifaNombre').value.trim();
+  const precio = document.getElementById('cfgPrecio').value;
+  let total = parseInt(document.getElementById('cfgTotal').value);
+  if (total > 200) { alert('El máximo de tickets es 200'); return; }
+  await guardarCfg({ rifa_nombre: nombre, precio_ticket: precio, total_tickets: String(total) });
+  cfg.rifa_nombre = nombre; cfg.precio_ticket = precio; cfg.total_tickets = String(total);
+  aplicarConfig();
+  alert('✅ Configuración de rifa guardada');
+}
+
+async function guardarMetodosPago() {
+  const updates = {
+    nequi_numero: document.getElementById('cfgNequi').value.trim(),
+    daviplata_numero: document.getElementById('cfgDaviplata').value.trim(),
+    breb_numero: document.getElementById('cfgBreb').value.trim(),
+    binance_id: document.getElementById('cfgBinance').value.trim()
+  };
+  await guardarCfg(updates);
+  Object.assign(cfg, updates);
+  alert('✅ Métodos de pago guardados');
+}
+
+async function cambiarPassword() {
+  const p1 = document.getElementById('cfgPass1').value;
+  const p2 = document.getElementById('cfgPass2').value;
+  const msg = document.getElementById('passMsg');
+  if (!p1 || p1.length < 4) { msg.style.color = 'var(--red)'; msg.textContent = 'Mínimo 4 caracteres'; return; }
+  if (p1 !== p2) { msg.style.color = 'var(--red)'; msg.textContent = 'Las contraseñas no coinciden'; return; }
+  await guardarCfg({ admin_password: p1 });
+  cfg.admin_password = p1;
+  msg.style.color = 'var(--green)';
+  msg.textContent = '✅ Contraseña actualizada';
+  document.getElementById('cfgPass1').value = '';
+  document.getElementById('cfgPass2').value = '';
+  setTimeout(() => msg.textContent = '', 3000);
+}
+
+async function guardarCfg(updates) {
+  for (const [clave, valor] of Object.entries(updates)) {
+    await sb.from('config').upsert({ clave, valor: String(valor) }, { onConflict: 'clave' });
+  }
+}
+
+// ══════════════════════════════════════════════
+// BOLETOS ADMIN
+// ══════════════════════════════════════════════
+window._filtroActual = 'todos';
+let _todosLosBoletos = [];
+
+async function cargarBoletos(filtro) {
+  window._filtroActual = filtro;
+  const lista = document.getElementById('boletosLista');
+  lista.innerHTML = '<div style="text-align:center;color:var(--txt2);padding:2rem">Cargando...</div>';
+  try {
+    const { data } = await sb.from('boletos').select('*').order('created_at', { ascending: false });
+    _todosLosBoletos = data || [];
+    renderBoletos(filtro);
+  } catch(e) {
+    lista.innerHTML = '<div style="color:var(--red);text-align:center;padding:1rem">Error al cargar</div>';
+  }
+}
+
+function filtrarBoletos(filtro, btn) {
+  window._filtroActual = filtro;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBoletos(filtro);
+}
+
+function renderBoletos(filtro) {
+  const lista = document.getElementById('boletosLista');
+  const items = filtro === 'todos' ? _todosLosBoletos : _todosLosBoletos.filter(b => b.estado === filtro);
+  if (!items.length) { lista.innerHTML = '<div style="text-align:center;color:var(--txt2);padding:2rem">Sin resultados</div>'; return; }
+  lista.innerHTML = items.map(b => {
+    const fecha = new Date(b.created_at).toLocaleDateString('es-CO');
+    const nums = (b.numeros_asignados||[]).map(n=>`<div class="boleto-num">${numPad(n)}</div>`).join('');
+    const compBtn = b.comprobante_url ? `<button class="btn-ver-comp" onclick="window.open('${b.comprobante_url}','_blank')">📷 Ver comprobante</button>` : '';
+    const aprobBtn = b.estado !== 'aprobado' ? `<button class="btn-aprobar" onclick="cambiarEstado('${b.id}','aprobado')">✅ Aprobar</button>` : '';
+    const rechBtn = b.estado !== 'rechazado' ? `<button class="btn-rechazar" onclick="cambiarEstado('${b.id}','rechazado')">❌ Rechazar</button>` : '';
+    return `<div class="boleto-card ${b.estado}">
+      <div class="boleto-head">
+        <div class="boleto-id">#${b.id.slice(-6).toUpperCase()}</div>
+        <div class="boleto-estado ${b.estado}">${b.estado}</div>
+      </div>
+      <div class="boleto-info">
+        👤 ${b.nombre} · 📱 ${b.whatsapp} · 🪪 ${b.cedula||'-'}<br>
+        💳 ${PAY_LABELS[b.metodo_pago]||b.metodo_pago} · Total: <strong>${fmt(b.total)}</strong> · ${b.cantidad} ticket(s)<br>
+        📅 ${fecha} · Ref: ${b.referencia||'-'}
+      </div>
+      <div class="boleto-numeros">${nums}</div>
+      <div class="boleto-actions">${aprobBtn}${rechBtn}${compBtn}</div>
+    </div>`;
+  }).join('');
+}
+
+async function cambiarEstado(id, estado) {
+  const boleto = _todosLosBoletos.find(b => b.id === id);
+  const { error } = await sb.from('boletos').update({ estado }).eq('id', id);
+  if (!error) {
+    _todosLosBoletos = _todosLosBoletos.map(b => b.id === id ? {...b, estado} : b);
+    renderBoletos(window._filtroActual);
+    cargarStats();
+    actualizarContadores();
+    if (estado === 'aprobado' && boleto) {
+      const nums = (boleto.numeros_asignados || []).map(n => numPad(n)).join(', ');
+      const rifaNombre = cfg.rifa_nombre || 'la rifa';
+      const msg = `¡Hola ${boleto.nombre}! 🎉 Tu pago ha sido *confirmado*.\n\nTus números de *${rifaNombre}* son:\n🎟️ ${nums}\n\n¡Mucha suerte! 🍀`;
+      const wa = (boleto.whatsapp || '').replace(/\D/g, '');
+      if (wa) window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+  }
+}
+
+// ══════════════════════════════════════════════
+// STATS ADMIN
+// ══════════════════════════════════════════════
+async function cargarStats() {
+  const { data } = await sb.from('boletos').select('cantidad,estado,total');
+  const total = Number(cfg.total_tickets) || 200;
+  const aprobados = (data||[]).filter(r=>r.estado==='aprobado');
+  const pendientes = (data||[]).filter(r=>r.estado==='pendiente');
+  const tAprobados = aprobados.reduce((s,r)=>s+(r.cantidad||0),0);
+  const tPendientes = pendientes.reduce((s,r)=>s+(r.cantidad||0),0);
+  const vendidos = tAprobados + tPendientes;
+  const disp = Math.max(0, total - vendidos);
+  const ingresos = aprobados.reduce((s,r)=>s+(Number(r.total)||0),0);
+  const pct = Math.round((tAprobados / total) * 100);
+  const el = id => document.getElementById(id);
+  if(el('stVendidos')) el('stVendidos').textContent = vendidos;
+  if(el('stDisponibles')) el('stDisponibles').textContent = disp;
+  if(el('stPendientes')) el('stPendientes').textContent = tPendientes;
+  if(el('stIngresos')) el('stIngresos').textContent = fmt(ingresos);
+  if(el('stPct')) el('stPct').textContent = pct + '%';
+  if(el('stBar')) el('stBar').style.width = pct + '%';
+}
+
+// ══════════════════════════════════════════════
+// VERIFICAR NÚMERO
+// ══════════════════════════════════════════════
+async function verificarNumero() {
+  const num = parseInt(document.getElementById('verifNum').value);
+  const res = document.getElementById('verifResult');
+  if (!num || num < 1 || num > 200) { res.style.display='block'; res.innerHTML='<span style="color:var(--red)">Número inválido (1–200)</span>'; return; }
+  const { data } = await sb.from('boletos').select('*').contains('numeros_asignados',[num]).neq('estado','rechazado');
+  res.style.display = 'block';
+  if (data && data.length > 0) {
+    const b = data[0];
+    res.innerHTML = `<div style="color:var(--green);font-weight:800;margin-bottom:.4rem">✅ Número <strong>${numPad(num)}</strong> encontrado</div>
+    <div style="font-size:.82rem;color:var(--txt2)">Titular: <strong style="color:var(--txt)">${b.nombre}</strong><br>Cédula: ${b.cedula||'-'} · WhatsApp: ${b.whatsapp}<br>Estado: <strong style="color:${b.estado==='aprobado'?'var(--green)':'#F39C12'}">${b.estado}</strong></div>`;
+  } else {
+    res.innerHTML = `<div style="color:var(--txt2)">🎫 Número <strong>${numPad(num)}</strong> está <strong style="color:var(--green)">DISPONIBLE</strong></div>`;
+  }
+}
+
+// ══════════════════════════════════════════════
+// NAV SCROLL — ocultar antes de llegar al CTA
+// ══════════════════════════════════════════════
+(function(){
+  const nav = document.getElementById('mainNav');
+  const cta = document.querySelector('.btn-cta');
+  if(!nav || !cta) return;
+  window.addEventListener('scroll', function(){
+    const ctaTop = cta.getBoundingClientRect().top;
+    const navBottom = 40 + 120 + 20; // top + height + buffer
+    if(ctaTop <= navBottom){
+      nav.style.transform = 'translateY(-220px)';
+    } else {
+      nav.style.transform = 'translateY(0)';
+    }
+  }, {passive:true});
+})();
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+initTheme();
+cargarConfig().then(async () => {
+  actualizarContadores();
+});
+</script>
 </body>
 </html>

@@ -508,7 +508,7 @@ body.light .drawer-item{background:#F4F4F4}
         <span class="drawer-item-icon">🔍</span>
         <span class="drawer-item-lbl">Verificar Boleto</span>
       </a>
-      <a class="drawer-item" href="https://wa.me/573009648502?text=Hola%20Oscar Cuervo%2C%20necesito%20soporte" target="_blank" onclick="cerrarDrawer()">
+      <a class="drawer-item" href="https://wa.me/573214789428?text=Hola%20Oscar Cuervo%2C%20necesito%20soporte" target="_blank" onclick="cerrarDrawer()">
         <span class="drawer-item-icon">💬</span>
         <span class="drawer-item-lbl">Soporte / Contacto</span>
       </a>
@@ -560,12 +560,12 @@ body.light .drawer-item{background:#F4F4F4}
   <footer class="footer">
     <div class="footer-brand"></div>
     <div class="footer-txt">Rifas 100% transparentes — Tu número, tu sueño</div>
-    <a class="wa-btn" href="https://wa.me/573009648502?text=Hola%20Oscar Cuervo%2C%20quiero%20informaci%C3%B3n%20sobre%20la%20rifa" target="_blank">
+    <a class="wa-btn" href="https://wa.me/573214789428?text=Hola%20Oscar Cuervo%2C%20quiero%20informaci%C3%B3n%20sobre%20la%20rifa" target="_blank">
       📱 WhatsApp de soporte
     </a>
     <div class="dev-link">
       ¿Te interesa un sistema de rifas como este?
-      <a href="https://wa.me/573145788337?text=Hola%2C%20me%20interesa%20un%20sistema%20de%20rifas%20como%20el%20de%20oscarcuervo" target="_blank">Escríbeme aquí →</a>
+      <a href="https://wa.me/573214789428?text=Hola%2C%20me%20interesa%20un%20sistema%20de%20rifas%20como%20el%20de%20oscarcuervo" target="_blank">Escríbeme aquí →</a>
     </div>
   </footer>
 </div>
@@ -740,7 +740,7 @@ let cfg = {
   pago_movil_cedula: '',
   total_tickets: 200,
   rifa_nombre: 'Gran Rifa de Moto',
-  admin_password: 'gustavo2025',
+  admin_password: 'OSCAR2026',
   facebook_url: '',
   instagram_url: '',
   youtube_url: '',
@@ -1110,7 +1110,7 @@ async function finalizarCompra() {
     actualizarContadores();
 
   } catch(e) {
-    alert('Hubo un problema. Por favor escribe a Oscar Cuervo por WhatsApp: +573009648502');
+    alert('Hubo un problema. Por favor escribe a Oscar Cuervo por WhatsApp: +573214789428');
     btn.textContent = '✅ FINALIZAR RESERVA';
     btn.disabled = false;
   }
@@ -1146,7 +1146,7 @@ function mostrarConfirmacion(numeros) {
   const grid = document.getElementById('numerosAsignados');
   grid.innerHTML = numeros.map(n => `<div class="numero-chip">${numPad(n)}</div>`).join('');
   const msg = encodeURIComponent(`Hola Oscar Cuervo! Hice una reserva de ${pState.qty} ticket(s) para la rifa. Mi nombre: ${pState.nombre} | Cédula: ${pState.cedula} | Mis números: ${numeros.map(numPad).join(', ')}`);
-  document.getElementById('confirmWaLink').href = `https://wa.me/573009648502?text=${msg}`;
+  document.getElementById('confirmWaLink').href = `https://wa.me/573214789428?text=${msg}`;
   irStep(4);
 
   // Verificar números dorados
@@ -1167,7 +1167,7 @@ function mostrarDorado(nums) {
   // Notificar a Oscar Cuervo por WhatsApp
   const rifaNombre = cfg.rifa_nombre || 'la rifa';
   const msgG = encodeURIComponent(`🏆 ¡NÚMERO DORADO! 🏆\n\n${pState.nombre} (${pState.whatsapp}) acaba de comprar y le tocó el número dorado: ${nums.map(numPad).join(', ')}\n\nRifa: ${rifaNombre}`);
-  window.open(`https://wa.me/573009648502?text=${msgG}`, '_blank');
+  window.open(`https://wa.me/573214789428?text=${msgG}`, '_blank');
 }
 
 function cerrarDoradoModal() {
@@ -1307,7 +1307,7 @@ function cerrarModalNuevaRifa() {
 }
 async function confirmarNuevaRifa() {
   const pass = document.getElementById('nuevaRifaPass').value;
-  if (pass !== (cfg.admin_password || 'gustavo2025')) {
+  if (pass !== (cfg.admin_password || 'OSCAR2026')) {
     document.getElementById('nuevaRifaErr').style.display = 'block';
     return;
   }

@@ -358,7 +358,7 @@ const SUPABASE_URL = 'https://pecdwxhtaplzjafufiks.supabase.co';
 const SUPABASE_KEY = window.SUPABASE_KEY || 'sb_publishable_WtVtoFHBZBWCWogv3FGngQ_mUx6FcUw'; // FORCE_REBUILD_v3
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let cfg = { admin_password:'gustavo2025' };
+let cfg = { admin_password:'OSCAR2026' };
 let todosB = [];
 let filtroActual = 'todos';
 let heroTipo = 'imagen';
@@ -1037,7 +1037,7 @@ function cerrarModalNuevaRifa() {
 }
 async function confirmarNuevaRifa() {
   const pass = document.getElementById('nuevaRifaPass').value;
-  if (pass !== (cfg.admin_password || 'gustavo2025')) {
+  if (pass !== (cfg.admin_password || 'OSCAR2026')) {
     document.getElementById('nuevaRifaErr').style.display = 'block';
     return;
   }
